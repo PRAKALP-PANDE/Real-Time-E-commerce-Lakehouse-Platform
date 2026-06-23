@@ -1,0 +1,277 @@
+Perfect. These screenshots tell us a lot.
+
+### Good News
+
+Your Databricks Free Edition account is much more capable than I initially thought.
+
+I can see:
+
+✅ Notebook creation available
+
+✅ ETL Pipeline available
+
+✅ Jobs available
+
+✅ MLflow available
+
+✅ Visual Data Prep available
+
+This means we can absolutely continue with the project.
+
+---
+
+# What Changed in Databricks?
+
+The old Community Edition had:
+
+```text
+Clusters
+```
+
+The new Free Edition provides:
+
+```text
+Serverless Compute
+```
+
+behind the scenes.
+
+So you won't create clusters manually.
+
+Databricks manages compute for you.
+
+---
+
+# Interview Insight
+
+This is actually useful to know.
+
+### Traditional Databricks
+
+```text
+User creates cluster
+      ↓
+Notebook runs on cluster
+```
+
+### Serverless Databricks
+
+```text
+Notebook
+      ↓
+Databricks provisions compute automatically
+```
+
+Less infrastructure management.
+
+---
+
+# Next Step
+
+Let's verify notebook execution.
+
+### Create Notebook
+
+Go to:
+
+```text
+Workspace
+→ Create
+→ Notebook
+```
+
+Name:
+
+```text
+01_bronze_ingestion
+```
+
+Language:
+
+```text
+Python
+```
+
+---
+
+# Test Notebook
+
+Put this in the first cell:
+
+```python
+from pyspark.sql import SparkSession
+
+print("Spark Session Available")
+print(spark.version)
+```
+
+Run it.
+
+---
+
+# Expected Output
+
+Something like:
+
+```text
+Spark Session Available
+4.x.x
+```
+
+or
+
+```text
+3.x.x
+```
+
+depending on the runtime.
+
+---
+
+# Why This Test?
+
+Before building:
+
+```text
+Streaming
+Delta
+Bronze
+Silver
+Gold
+```
+
+we verify:
+
+```text
+Spark is available
+```
+
+inside notebooks.
+
+---
+
+# Important Architecture Adjustment
+
+Since Databricks Free Edition cannot directly access your local Docker Kafka:
+
+```text
+Your Laptop
+ └── Kafka
+```
+
+and
+
+```text
+Databricks Cloud
+```
+
+are separate networks.
+
+So for the next phase we'll simulate Kafka ingestion using files.
+
+### Why This Is Fine
+
+Structured Streaming doesn't care whether the source is:
+
+```text
+Kafka
+File Stream
+Event Hub
+Kinesis
+```
+
+The concepts are identical:
+
+* Streaming DataFrames
+* Checkpointing
+* Watermarks
+* Stateful Processing
+
+---
+
+# What We'll Build First
+
+```text
+JSON Files Arrive
+       ↓
+Structured Streaming
+       ↓
+Bronze Delta Table
+```
+
+Then:
+
+```text
+Bronze
+ ↓
+Silver
+```
+
+Deduplication
+
+Null Handling
+
+Schema Validation
+
+---
+
+# Your Earlier Answer About Bronze/Silver
+
+You said:
+
+> Keep duplicates in Bronze and remove them in Silver.
+
+That was exactly correct.
+
+We're going to implement that for real.
+
+---
+
+# Homework Question
+
+While creating the notebook, think about this:
+
+Suppose:
+
+```json
+{
+  "order_id": 1001,
+  "amount": 500
+}
+```
+
+arrives at:
+
+```text
+10:00 AM
+```
+
+but another event arrives at:
+
+```text
+10:20 AM
+```
+
+for the same order.
+
+How long should Spark wait before deciding no more late events will arrive?
+
+This is the problem that **watermarks** solve, and we'll implement them later.
+
+---
+
+### Your Task
+
+1. Create notebook `01_bronze_ingestion`
+2. Run:
+
+```python
+print(spark.version)
+```
+
+3. Send me:
+
+   * Output
+   * Any errors
+
+Once that works, we'll build the first streaming ingestion notebook and start the Bronze layer properly. 🚀

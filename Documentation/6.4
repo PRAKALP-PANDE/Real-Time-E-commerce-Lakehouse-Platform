@@ -1,0 +1,219 @@
+Perfect. That tells us:
+
+```text id="v31vca"
+docker-desktop
+```
+
+is the only WSL distribution installed.
+
+You do **not** have Ubuntu installed.
+
+So let's not switch environments in the middle of the project.
+
+---
+
+# What Happened?
+
+We discovered:
+
+✅ Kafka works
+
+✅ Producer works
+
+✅ Consumer works
+
+✅ Spark works
+
+❌ Spark + Kafka Connector fails on Windows because Spark 4.x is trying to invoke Hadoop utilities (`winutils.exe`). 
+
+This is actually a known Windows issue.
+
+---
+
+# Best Path Forward
+
+For this project, I recommend:
+
+### Install Hadoop Windows Binaries Once
+
+This takes about 5-10 minutes.
+
+After that:
+
+```text id="n50j6f"
+Kafka
+Spark
+Delta
+Airflow
+```
+
+will all work on your machine.
+
+Much easier than:
+
+```text id="mjlwmk"
+Installing Ubuntu
+Installing Python
+Installing Java
+Moving project
+Reconfiguring environment
+```
+
+---
+
+# Why This Is Still Valuable
+
+Interview question:
+
+> Have you ever faced environment issues while setting up Spark?
+
+Now you'll have a real answer:
+
+> While integrating Spark Structured Streaming with Kafka on Windows, Spark required Hadoop utilities (`winutils.exe`). I configured the Hadoop binaries and environment variables to resolve the issue and successfully connected Spark to Kafka.
+
+That's real engineering work.
+
+---
+
+# Step 1: Create Hadoop Directory
+
+Create:
+
+```text id="fwppaj"
+C:\hadoop
+```
+
+Inside:
+
+```text id="9n2nsw"
+C:\hadoop\bin
+```
+
+---
+
+# Step 2: Download winutils.exe
+
+Download a Hadoop 3.x compatible `winutils.exe`.
+
+A commonly used source is the GitHub repository maintained by the community:
+
+```text id="rrnukr"
+https://github.com/cdarlint/winutils
+```
+
+Navigate to:
+
+```text id="rq9mtu"
+hadoop-3.3.6/bin
+```
+
+Download:
+
+```text id="6htxaq"
+winutils.exe
+```
+
+Place it in:
+
+```text id="pjqj9j"
+C:\hadoop\bin
+```
+
+---
+
+# Step 3: Set Environment Variables
+
+Open PowerShell as Administrator:
+
+```powershell id="38t6w2"
+setx HADOOP_HOME "C:\hadoop" /M
+```
+
+Then:
+
+```powershell id="3m7xhf"
+setx hadoop.home.dir "C:\hadoop" /M
+```
+
+Restart PowerShell afterward.
+
+---
+
+# Step 4: Verify
+
+Run:
+
+```powershell id="s1nfwj"
+echo $env:HADOOP_HOME
+```
+
+Expected:
+
+```text id="1uvrhi"
+C:\hadoop
+```
+
+---
+
+# Step 5: Test Spark Again
+
+Run:
+
+```bash id="u65gm2"
+python spark/test_kafka_connection.py
+```
+
+Expected output:
+
+```text id="nswpak"
+Spark Started Successfully
+```
+
+---
+
+# Why Are We Doing This?
+
+Because the next milestone is the exciting one:
+
+```text id="2mv3zs"
+Kafka Topic
+      ↓
+Spark Streaming DataFrame
+      ↓
+Console Output
+```
+
+We'll literally watch Spark consume Kafka events.
+
+After that:
+
+```text id="drz0ye"
+Kafka
+ ↓
+Spark
+ ↓
+Bronze Delta
+```
+
+which is the first true Data Engineering pipeline stage.
+
+---
+
+## Small Architecture Check
+
+Before you do the Hadoop setup, answer one quick question:
+
+We currently have:
+
+```text id="53qivq"
+orders topic
+Partitions = 3
+```
+
+When Spark reads from Kafka:
+
+Can Spark process all 3 partitions in parallel?
+
+And if yes, what Spark concept (task, executor, partition, etc.) enables that parallelism?
+
+This is a very common Spark + Kafka interview question.

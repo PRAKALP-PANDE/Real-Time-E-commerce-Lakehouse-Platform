@@ -1,0 +1,226 @@
+🎯 **Exactly right.**
+
+This is the answer I would expect from someone who has actually worked with Medallion Architecture rather than just watched a tutorial.
+
+---
+
+# Your Answer
+
+> We should remove duplicates in Silver because Bronze should remain raw and immutable.
+
+✅ Correct.
+
+This is one of the core principles of Medallion Architecture.
+
+---
+
+# Why Bronze Exists
+
+Bronze is your **system of record**.
+
+Think of it as:
+
+```text id="6g7vra"
+What exactly arrived from the source?
+```
+
+If someone asks:
+
+> "Can you prove what Kafka sent yesterday at 2 PM?"
+
+You should be able to go back to Bronze and see the original event.
+
+---
+
+# Wrong Approach
+
+```text id="t2v5ut"
+Kafka
+ ↓
+Spark
+ ↓
+Bronze (remove duplicates)
+```
+
+Problem:
+
+You've already modified the raw data.
+
+Now you can never answer:
+
+```text id="f9h7e1"
+What actually arrived?
+```
+
+Auditability is lost.
+
+---
+
+# Correct Approach
+
+```text id="rrk9qj"
+Kafka
+ ↓
+Spark
+ ↓
+Bronze (raw)
+ ↓
+Silver (cleaned)
+```
+
+Bronze stores:
+
+```json id="1uz8wq"
+Order 1001
+Order 1001
+```
+
+Silver stores:
+
+```json id="t9k0qa"
+Order 1001
+```
+
+One clean version.
+
+---
+
+# Interview Question
+
+### What kind of data belongs in Bronze?
+
+Strong answer:
+
+> Bronze contains raw, immutable data exactly as received from the source system, including duplicates, malformed records, and schema variations.
+
+---
+
+### What kind of transformations belong in Silver?
+
+Strong answer:
+
+> Silver contains validated and cleansed data. Typical transformations include deduplication, null handling, schema enforcement, data quality checks, and standardization.
+
+---
+
+### What belongs in Gold?
+
+Strong answer:
+
+> Gold contains business-ready datasets and aggregations used for reporting, analytics, and dashboards.
+
+Examples:
+
+```text id="b0o8kr"
+daily_sales
+revenue_by_product
+top_customers
+conversion_rate
+```
+
+---
+
+# Real Interview Scenario
+
+Imagine an interviewer asks:
+
+> A duplicate order arrived from Kafka. Where would you remove it?
+
+A weak answer:
+
+> In Spark.
+
+A strong answer:
+
+> I would preserve the duplicate event in the Bronze layer and perform deduplication in the Silver layer to maintain data lineage and auditability while providing a clean dataset for downstream consumers.
+
+That's the kind of answer that gets noticed.
+
+---
+
+# At This Point You Understand
+
+### Kafka
+
+✅ Producer
+✅ Consumer
+✅ Topic
+✅ Partition
+✅ Offset
+✅ Consumer Groups
+✅ Delivery Guarantees
+
+### Data Engineering Concepts
+
+✅ Event-driven architecture
+✅ Scalability
+✅ Replayability
+✅ Medallion Architecture
+✅ Bronze vs Silver vs Gold responsibilities
+
+---
+
+# Next Session: Spark Structured Streaming
+
+We'll start building:
+
+```text id="lp1lmf"
+Producer
+   ↓
+Kafka
+   ↓
+Spark Structured Streaming
+   ↓
+Bronze Delta Table
+```
+
+### What You'll Learn
+
+#### Spark Streaming Concepts
+
+* Micro-batches
+* Trigger intervals
+* Checkpointing
+* Watermarks
+* Stateful processing
+
+#### Delta Lake Concepts
+
+* Why Delta over Parquet
+* Transaction log
+* ACID guarantees
+* Schema evolution
+
+#### Interview Questions
+
+* What is Structured Streaming?
+* How is it different from batch Spark?
+* What is checkpointing?
+* Why Delta Lake?
+* How does Spark recover from failures?
+
+---
+
+## Your Homework Before We Continue
+
+Run this command and send me the output:
+
+```bash
+pip show pyspark
+```
+
+If not installed:
+
+```bash
+pip install pyspark delta-spark
+```
+
+Then send me:
+
+```bash
+python --version
+pip show pyspark
+pip show delta-spark
+```
+
+Once that's ready, we'll build our first **Kafka → Spark → Bronze Delta** streaming pipeline. This is where the project starts becoming a true production-style Data Engineering system. 🚀

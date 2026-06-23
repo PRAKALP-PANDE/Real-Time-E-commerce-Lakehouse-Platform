@@ -1,0 +1,230 @@
+I think that's the right decision.
+
+In fact, this mirrors what happened in many real teams:
+
+```text id="yq2qtk"
+Local Spark Setup
+       ↓
+Environment Issues
+       ↓
+Move to Managed Platform
+```
+
+The goal of Project 2 is not:
+
+```text id="8s5gy9"
+Become Hadoop/Windows expert
+```
+
+The goal is:
+
+```text id="g0uxks"
+Become a stronger Data Engineer
+```
+
+---
+
+# Revised Project Architecture
+
+## Local Machine
+
+```text id="bjux3w"
+Producer
+Docker
+Kafka
+```
+
+## Databricks
+
+```text id="mjlwm2"
+Spark Structured Streaming
+Delta Lake
+Bronze
+Silver
+Gold
+Data Quality
+```
+
+Later:
+
+```text id="jlwmj8"
+Airflow
+Docker
+Kubernetes Concepts
+```
+
+---
+
+# Why This Is Actually Better For Interviews
+
+Many interviewers care more about:
+
+* Structured Streaming
+* Delta Lake
+* Medallion Architecture
+* Checkpointing
+* Watermarks
+* Streaming Joins
+* Data Quality
+
+than:
+
+```text id="0s9qgk"
+How did you install Spark?
+```
+
+---
+
+# Updated Learning Roadmap
+
+### Phase 1 ✅
+
+Kafka Fundamentals
+
+* Producer
+* Consumer
+* Topic
+* Partition
+* Offset
+* Consumer Groups
+* Delivery Guarantees
+
+Completed.
+
+---
+
+### Phase 2 (Starting Next)
+
+Kafka → Databricks
+
+```text id="q9mjlwm"
+Kafka
+ ↓
+Spark Structured Streaming
+ ↓
+Bronze Delta
+```
+
+You'll learn:
+
+* Structured Streaming
+* Streaming DataFrames
+* Kafka ingestion
+* Checkpointing
+* Delta Tables
+
+---
+
+### Phase 3
+
+Silver Layer
+
+```text id="ztjlwm"
+Bronze
+ ↓
+Silver
+```
+
+You'll learn:
+
+* Deduplication
+* Schema enforcement
+* Null handling
+* Data Quality Rules
+
+---
+
+### Phase 4
+
+Gold Layer
+
+```text id="3hqm2g"
+Silver
+ ↓
+Gold
+```
+
+You'll learn:
+
+* Business KPIs
+* Revenue metrics
+* Product analytics
+* Aggregations
+
+---
+
+### Phase 5
+
+Orchestration
+
+```text id="wpqh6p"
+Airflow
+```
+
+You'll learn:
+
+* DAGs
+* Scheduling
+* Retries
+* Dependencies
+
+---
+
+### Phase 6
+
+Kubernetes Concepts
+
+Since you specifically wanted Kubernetes in Project 2.
+
+We'll cover:
+
+* Pods
+* Deployments
+* Services
+* ConfigMaps
+* Why Spark on Kubernetes
+
+without requiring a heavy local cluster.
+
+---
+
+# Next Step (Databricks Setup)
+
+Please create a free account on:
+
+[Databricks Community Edition](https://community.cloud.databricks.com/?utm_source=chatgpt.com)
+
+Once you are logged in, tell me:
+
+1. Can you access the Databricks workspace?
+
+2. Do you see the left sidebar with:
+
+   * Workspace
+   * Compute
+   * Catalog
+   * Jobs
+
+3. Send me a screenshot if anything looks different.
+
+---
+
+# Small Interview Question While You Set It Up
+
+Suppose Spark Structured Streaming reads Kafka and writes to Bronze.
+
+Where should checkpointing be stored?
+
+### Option A
+
+Kafka
+
+### Option B
+
+Bronze Delta Table
+
+### Option C
+
+Separate Checkpoint Location
+
+Think about it. This becomes one of the most important Structured Streaming concepts we'll use in the next step. 🚀

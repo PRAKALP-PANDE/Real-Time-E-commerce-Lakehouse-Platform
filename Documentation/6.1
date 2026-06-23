@@ -1,0 +1,292 @@
+Perfect. Your environment is ready.
+
+### What I Like
+
+✅ Python 3.11.5
+
+✅ PySpark 4.1.1
+
+✅ Delta Lake 4.3.0
+
+✅ Kafka already running
+
+✅ Producer working
+
+✅ Consumer working
+
+This means we can move directly to **Spark Structured Streaming**.
+
+---
+
+# Stage 2: Kafka → Spark → Bronze
+
+Current Architecture:
+
+```text id="h6ng7v"
+Producer
+   ↓
+Kafka
+   ↓
+Consumer
+```
+
+New Architecture:
+
+```text id="u71m5x"
+Producer
+   ↓
+Kafka
+   ↓
+Spark Structured Streaming
+   ↓
+Bronze Delta Table
+```
+
+---
+
+# First Question
+
+## What is Spark Structured Streaming?
+
+Most beginners think:
+
+> Spark Streaming processes one record at a time.
+
+❌ Not exactly.
+
+Spark Structured Streaming uses **micro-batches**.
+
+---
+
+Imagine Kafka receives:
+
+```text id="jshmym"
+Message 1
+Message 2
+Message 3
+Message 4
+Message 5
+```
+
+Spark groups them:
+
+```text id="40o07w"
+Batch 1
+ ├─ Message 1
+ ├─ Message 2
+ └─ Message 3
+
+Batch 2
+ ├─ Message 4
+ └─ Message 5
+```
+
+and processes them together.
+
+---
+
+# Why Not Process One Event At A Time?
+
+Processing:
+
+```text id="57pq8s"
+1 event
+1 event
+1 event
+1 event
+```
+
+creates huge overhead.
+
+Micro-batching gives:
+
+✅ Better throughput
+
+✅ Lower cost
+
+✅ Easier fault recovery
+
+---
+
+# Interview Question
+
+### Is Spark Structured Streaming truly real-time?
+
+Strong answer:
+
+> Spark Structured Streaming is near real-time because it processes data in micro-batches rather than processing every event individually.
+
+---
+
+# Why Spark Here?
+
+Currently:
+
+```text id="j9p9pi"
+Consumer
+```
+
+just prints messages.
+
+We need:
+
+```text id="vm4zot"
+Read Kafka
+Validate
+Transform
+Store
+```
+
+Spark excels at this.
+
+---
+
+# Project Structure Update
+
+Create:
+
+```text id="a04fgi"
+spark/
+```
+
+Inside:
+
+```text id="y7czn4"
+spark/
+└── bronze_stream.py
+```
+
+---
+
+# Step 1: Verify Spark Works
+
+Create:
+
+```python
+# spark/test_spark.py
+
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("test")
+    .master("local[*]")
+    .getOrCreate()
+)
+
+print("Spark Version:", spark.version)
+
+spark.stop()
+```
+
+Run:
+
+```bash
+python spark/test_spark.py
+```
+
+---
+
+# Why Are We Doing This?
+
+Before introducing:
+
+```text id="c4wyv6"
+Kafka Connector
+Delta Connector
+Streaming
+```
+
+we verify:
+
+```text id="bnsjlwm"
+Spark itself works
+```
+
+This saves hours of debugging.
+
+---
+
+# Interview Question
+
+### What does local[*] mean?
+
+Strong answer:
+
+> local[*] tells Spark to run locally and use all available CPU cores on the machine.
+
+---
+
+# Expected Output
+
+Something similar to:
+
+```text id="mjlwm0"
+Spark Version: 4.1.1
+```
+
+You may also see Spark startup logs.
+
+That's normal.
+
+---
+
+# Important Note About Windows
+
+Since you're on:
+
+```text id="62ebaq"
+Windows
+8 GB RAM
+```
+
+we'll initially run Spark in:
+
+```python
+.master("local[2]")
+```
+
+instead of:
+
+```python
+.master("local[*]")
+```
+
+for streaming jobs later.
+
+Why?
+
+Your machine already runs:
+
+```text id="l6i1rh"
+Kafka
+Docker
+Spark
+```
+
+Limiting Spark prevents your laptop from becoming sluggish.
+
+---
+
+# Your Task
+
+Create:
+
+```text id="yj08cl"
+spark/test_spark.py
+```
+
+Run:
+
+```bash
+python spark/test_spark.py
+```
+
+Send me:
+
+1. The output
+2. Any warnings/errors
+
+Once Spark starts successfully, we'll connect Spark to Kafka and build the first streaming DataFrame.
+
+At that point you'll be working with the exact same architecture used in many production lakehouse pipelines. 🚀

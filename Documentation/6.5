@@ -1,0 +1,124 @@
+Good catch. The error tells us something important.
+
+The problem is **not** that `HADOOP_HOME` is missing anymore.
+
+The problem is likely one of these:
+
+### Check 1: Does winutils.exe actually exist?
+
+Run:
+
+```powershell
+dir C:\hadoop\bin
+```
+
+You should see:
+
+```text
+winutils.exe
+```
+
+If not, Spark will still behave exactly like this.
+
+---
+
+### Check 2: Did the current terminal pick up the new environment variable?
+
+Run:
+
+```powershell
+echo $env:HADOOP_HOME
+echo $env:hadoop.home.dir
+```
+
+I want to see both outputs.
+
+If one is blank, that's our issue.
+
+---
+
+### Check 3: Let's bypass environment variables completely
+
+Create:
+
+```python
+import os
+
+os.environ["HADOOP_HOME"] = r"C:\hadoop"
+os.environ["hadoop.home.dir"] = r"C:\hadoop"
+
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("KafkaTest")
+    .master("local[2]")
+    .config(
+        "spark.jars.packages",
+        "org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1"
+    )
+    .getOrCreate()
+)
+
+print("Spark Started Successfully")
+
+spark.stop()
+```
+
+This forces Spark to see the variables before initialization.
+
+---
+
+### Check 4: Verify winutils directly
+
+Run:
+
+```powershell
+C:\hadoop\bin\winutils.exe ls C:\
+```
+
+If Windows says:
+
+```text
+The system cannot find the file specified
+```
+
+or
+
+```text
+not recognized as a command
+```
+
+then the Hadoop setup isn't complete.
+
+---
+
+## Why I'm Being Careful Here
+
+The error still says:
+
+```text
+HADOOP_HOME and hadoop.home.dir are unset
+```
+
+even after you set `HADOOP_HOME`. 
+
+That usually means one of two things:
+
+1. `winutils.exe` isn't actually present in `C:\hadoop\bin`
+2. Spark is starting before it sees the environment variables
+
+---
+
+Send me the outputs of:
+
+```powershell
+dir C:\hadoop\bin
+
+echo $env:HADOOP_HOME
+echo $env:hadoop.home.dir
+
+C:\hadoop\bin\winutils.exe ls C:\
+```
+
+Once I see those three outputs, we'll identify the exact issue and get Spark talking to Kafka. We're very close—the Kafka connector itself downloaded successfully, which is a good sign. 

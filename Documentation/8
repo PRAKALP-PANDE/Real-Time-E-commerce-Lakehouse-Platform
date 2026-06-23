@@ -1,0 +1,254 @@
+Perfect! 🎉
+
+Your Databricks workspace is ready, and honestly, this UI is much better than the old Community Edition interface.
+
+I can see:
+
+✅ Workspace
+
+✅ Catalog
+
+✅ Jobs & Pipelines
+
+✅ Compute
+
+✅ SQL Warehouse
+
+This means we can build a proper Data Engineering project.
+
+---
+
+# First: Your Checkpointing Question
+
+I asked:
+
+> Where should checkpointing be stored?
+
+You didn't answer yet, so let's cover it.
+
+Options:
+
+```text id="nfl0e9"
+A. Kafka
+B. Bronze Table
+C. Separate Checkpoint Location
+```
+
+### Correct Answer
+
+✅ **C. Separate Checkpoint Location**
+
+Example:
+
+```text id="4pcqsh"
+dbfs:/checkpoints/orders_bronze/
+```
+
+Why?
+
+Spark stores:
+
+* Processed offsets
+* Streaming state
+* Recovery metadata
+
+Separately from data.
+
+This allows:
+
+```text id="y6vyht"
+Crash
+ ↓
+Restart
+ ↓
+Continue from last checkpoint
+```
+
+without reprocessing everything.
+
+---
+
+# Project Architecture (Final Version)
+
+Instead of connecting Databricks directly to your local Kafka (which is difficult from Community Edition), we'll simulate real-time Kafka events first.
+
+Architecture:
+
+```text id="4ybcrp"
+Order Generator
+      ↓
+JSON Events
+      ↓
+Databricks Auto Loader
+      ↓
+Bronze Delta
+      ↓
+Silver Delta
+      ↓
+Gold Delta
+```
+
+---
+
+# Why This Is Okay
+
+Interviewers care about:
+
+✅ Streaming concepts
+
+✅ Delta Lake
+
+✅ Checkpointing
+
+✅ Medallion Architecture
+
+✅ Watermarks
+
+✅ Deduplication
+
+They do **not** care whether your source was a local Docker Kafka broker or a cloud event stream.
+
+The concepts are identical.
+
+---
+
+# Important Design Question
+
+Remember your Weather Project?
+
+You already built:
+
+```text id="w8urvr"
+Bronze
+Silver
+Gold
+```
+
+This project needs to go beyond that.
+
+So we'll introduce:
+
+### New Skills
+
+#### Structured Streaming
+
+Instead of:
+
+```text id="knzvjw"
+spark.read()
+```
+
+we'll use:
+
+```python id="z85upn"
+spark.readStream()
+```
+
+---
+
+#### Checkpointing
+
+New concept.
+
+---
+
+#### Watermarks
+
+New concept.
+
+---
+
+#### Slowly Changing Dimensions (SCD)
+
+New concept.
+
+---
+
+#### Data Quality Framework
+
+New concept.
+
+---
+
+#### Airflow
+
+New concept.
+
+---
+
+# Step 1: Create Compute
+
+Click:
+
+```text id="h4cz9o"
+Compute
+```
+
+Create a cluster.
+
+Use:
+
+```text id="jjlwmv"
+Name:
+de-project-2-cluster
+```
+
+Runtime:
+
+Choose the latest available runtime.
+
+Node type:
+
+Use whatever the free edition provides by default.
+
+---
+
+# Interview Question
+
+### Why do we need a cluster?
+
+Strong answer:
+
+> Spark executes jobs on a cluster. The cluster provides the compute resources required to run distributed data processing workloads.
+
+---
+
+# Once Cluster Is Running
+
+We'll create:
+
+```text id="n0zrpd"
+Workspace
+└── Project_2
+    ├── Bronze
+    ├── Silver
+    ├── Gold
+```
+
+and our first notebook:
+
+```text id="xjlwmv"
+01_bronze_ingestion
+```
+
+---
+
+# Before We Continue
+
+Go to:
+
+```text id="v5p2ml"
+Compute
+```
+
+Create the cluster.
+
+Send me a screenshot after it shows:
+
+```text id="96p0bc"
+Running
+```
+
+Then we'll start writing our first Structured Streaming code and build the Bronze layer properly from Day 1.
+
+This is where the project starts becoming resume-worthy. 🚀

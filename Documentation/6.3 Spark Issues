@@ -1,0 +1,86 @@
+Ah, I see the issue.
+
+You're inside:
+
+```text id="c3j3eu"
+docker-desktop
+```
+
+which is Docker's internal Linux VM, **not your WSL Ubuntu distribution**.
+
+That's why:
+
+```bash id="rtjlwm"
+python3 --version
+```
+
+and
+
+```bash id="dhutx7"
+java -version
+```
+
+don't exist there.
+
+---
+
+# Let's Check What You Actually Have
+
+Open PowerShell and run:
+
+```powershell id="wqth8f"
+wsl -l -v
+```
+
+Send me the output.
+
+I expect something like:
+
+```text id="v7mqxs"
+NAME                   STATE           VERSION
+Ubuntu                 Running         2
+docker-desktop         Running         2
+docker-desktop-data    Running         2
+```
+
+If you have:
+
+```text id="e53k89"
+Ubuntu
+```
+
+or another Linux distro installed, we'll use that.
+
+---
+
+# Alternative Option (Possibly Easier)
+
+Since your Spark test worked earlier, we may not need WSL at all.
+
+The issue is specifically triggered when Spark tries to download and use external Kafka jars. 
+
+Instead of moving everything to WSL, we can fix Windows Spark properly by installing Hadoop binaries once.
+
+For this project, that may actually be simpler.
+
+---
+
+# My Recommendation Now
+
+Let's first check:
+
+```powershell id="uhbvv7"
+wsl -l -v
+```
+
+If you don't have Ubuntu installed, we'll stay on Windows and fix the Hadoop issue.
+
+If you do have Ubuntu installed, I'll recommend using Ubuntu for Spark because it will save us trouble later.
+
+Send me the output of:
+
+```powershell id="ej6iyw"
+wsl -l -v
+```
+
+and we'll decide the cleanest path forward.

@@ -1,0 +1,263 @@
+Excellent. 🚀
+
+The most important line is:
+
+```text id="7fx5mq"
+Spark Version: 4.1.1
+```
+
+That means:
+
+✅ Java is installed correctly
+✅ PySpark is working
+✅ SparkSession is created successfully
+✅ Your environment is ready for streaming
+
+---
+
+# About the Warnings
+
+### Warning 1
+
+```text id="3wxfvc"
+Did not find winutils.exe
+```
+
+This is a classic Windows Spark warning.
+
+For our project:
+
+```text id="bnlrl3"
+Ignore it
+```
+
+We are not using HDFS.
+
+We're using:
+
+```text id="vh3lqe"
+Kafka
+Delta Lake
+Local Filesystem
+```
+
+so this warning is harmless.
+
+---
+
+### Warning 2
+
+```text id="9uz8r5"
+Unable to load native-hadoop library
+```
+
+Also normal on Windows.
+
+Safe to ignore.
+
+---
+
+# What Just Happened Internally?
+
+When you executed:
+
+```python
+spark = (
+    SparkSession.builder
+    .appName("test")
+    .master("local[*]")
+    .getOrCreate()
+)
+```
+
+Spark created:
+
+```text id="ehjgt6"
+Driver Process
+```
+
+The driver is the brain of Spark.
+
+---
+
+# Interview Question
+
+### What is a Spark Driver?
+
+Strong answer:
+
+> The Driver is the central process that creates the SparkSession, builds the execution plan, schedules tasks, and coordinates executors.
+
+---
+
+# Spark Architecture (Very Important)
+
+```text id="yit5qp"
+            Driver
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+Executor1  Executor2  Executor3
+```
+
+### Driver
+
+Responsible for:
+
+* Planning
+* Scheduling
+* Coordination
+
+### Executors
+
+Responsible for:
+
+* Actual processing
+* Transformations
+* Writing output
+
+---
+
+# Interview Question
+
+### Driver vs Executor?
+
+Strong answer:
+
+> The Driver coordinates and plans Spark jobs, while Executors perform the actual computation and data processing.
+
+---
+
+# Next Goal
+
+We now want:
+
+```text id="jggv90"
+Kafka
+   ↓
+Spark
+```
+
+instead of:
+
+```text id="5f5r7s"
+Kafka
+   ↓
+Python Consumer
+```
+
+---
+
+# Before Writing Streaming Code
+
+We need the Kafka connector.
+
+Spark can read:
+
+```text id="s9mrzd"
+CSV
+Parquet
+JSON
+Delta
+```
+
+natively.
+
+Kafka requires an additional package.
+
+---
+
+# Create File
+
+```text id="0mnkmc"
+spark/test_kafka_connection.py
+```
+
+```python
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder
+    .appName("KafkaTest")
+    .master("local[2]")
+    .config(
+        "spark.jars.packages",
+        "org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1"
+    )
+    .getOrCreate()
+)
+
+print("Spark Started Successfully")
+
+spark.stop()
+```
+
+---
+
+# Why Do We Need This Package?
+
+Spark knows nothing about Kafka by default.
+
+The connector teaches Spark:
+
+```text id="lj2w0x"
+How to:
+- Connect to Kafka
+- Read Topics
+- Read Offsets
+- Stream Data
+```
+
+---
+
+# Interview Question
+
+### Why is a Kafka connector needed?
+
+Strong answer:
+
+> Kafka is not a native Spark data source. The Kafka connector provides the integration layer that allows Spark Structured Streaming to read and write Kafka topics.
+
+---
+
+# Possible Issue
+
+Because you're using:
+
+```text id="25m53t"
+Spark 4.1.1
+```
+
+the package version may not exist yet in Maven repositories.
+
+If you get an error, don't spend time debugging.
+
+Just send me the full error.
+
+We'll choose the compatible connector version.
+
+---
+
+# Your Task
+
+Create:
+
+```text id="v9u7dq"
+spark/test_kafka_connection.py
+```
+
+Run:
+
+```bash
+python spark/test_kafka_connection.py
+```
+
+Send me:
+
+* Success output
+  OR
+* Full error message
+
+Once that works, we'll build our first **Streaming DataFrame** and watch Spark read events directly from Kafka instead of using a Python consumer.
+
+That's the moment when the project officially becomes a real-time data pipeline. 🔥
