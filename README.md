@@ -1,5 +1,17 @@
-# Real-Time E-commerce Lakehouse Platform
-Architecture
+## Project Progress
+
+- [x] Bronze Ingestion
+- [x] Silver Validation
+- [x] Window-based Deduplication
+- [x] Incremental Processing with Delta MERGE
+- [ ] Data Quality Metrics
+- [ ] Gold Layer
+- [ ] Streaming Pipeline
+- [ ] Airflow Orchestration
+
+---
+
+## Architecture
 
                 ┌─────────────┐
                 │ Order Events│
