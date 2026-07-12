@@ -2,3 +2,5 @@ venv/
 Documentation/
 __pycache__/
 *.pyc
+
+/airflow/logs/
