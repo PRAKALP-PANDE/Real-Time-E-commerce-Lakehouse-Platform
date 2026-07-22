@@ -1,0 +1,10 @@
+{"order_id": 1250, "customer_id": 57, "product_id": 22, "quantity": 2, "amount": 2030.46, "timestamp": "2026-07-22T19:32:10.036945"}
+{"order_id": 9252, "customer_id": 24, "product_id": 20, "quantity": 4, "amount": 1297.37, "timestamp": "2026-07-22T19:32:12.358682"}
+{"order_id": 5887, "customer_id": 66, "product_id": 2, "quantity": 4, "amount": 2069.03, "timestamp": "2026-07-22T19:32:14.581698"}
+{"order_id": 5681, "customer_id": 86, "product_id": 27, "quantity": 5, "amount": 4737.58, "timestamp": "2026-07-22T19:32:16.582803"}
+{"order_id": 2185, "customer_id": 20, "product_id": 7, "quantity": 1, "amount": 4870.54, "timestamp": "2026-07-22T19:32:18.583598"}
+{"order_id": 5345, "customer_id": 35, "product_id": 38, "quantity": 5, "amount": 2751.91, "timestamp": "2026-07-22T19:32:20.584653"}
+{"order_id": 2942, "customer_id": 35, "product_id": 37, "quantity": 1, "amount": 4639.43, "timestamp": "2026-07-22T19:32:22.585326"}
+{"order_id": 8440, "customer_id": 100, "product_id": 8, "quantity": 3, "amount": 3780.82, "timestamp": "2026-07-22T19:32:24.585914"}
+{"order_id": 5171, "customer_id": 44, "product_id": 18, "quantity": 2, "amount": 3026.48, "timestamp": "2026-07-22T19:32:26.586642"}
+{"order_id": 6176, "customer_id": 10, "product_id": 48, "quantity": 5, "amount": 2512.62, "timestamp": "2026-07-22T19:32:28.474220"}

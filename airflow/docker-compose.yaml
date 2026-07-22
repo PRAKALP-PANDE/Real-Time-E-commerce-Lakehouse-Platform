@@ -56,6 +56,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    LANDING_PATH: /opt/airflow/project/landing
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -84,6 +85,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ../producer:/opt/airflow/project/producer
     - ../consumer:/opt/airflow/project/consumer
+    - ../landing:/opt/airflow/project/landing
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
